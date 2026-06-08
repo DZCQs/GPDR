@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gpdr"
+version = "0.1.0"
+description = "Package implementation for Gaussian-process density regression examples."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "scipy",
+  "pandas",
+  "torch",
+  "gpytorch",
+  "matplotlib",
+]
+
+[project.optional-dependencies]
+examples = ["pygam", "geopandas", "kmeans-pytorch", "seaborn"]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gpdr*"]
+
