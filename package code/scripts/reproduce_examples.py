@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run all current GPDR paper figures and metrics; see verify_paper.py for audits."""
+"""Train GPDR and generate the paper figures and metrics using public functions."""
 from pathlib import Path
 import sys
 
