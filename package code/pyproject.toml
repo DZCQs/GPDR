@@ -26,9 +26,3 @@ test = ["pytest"]
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["gpdr*"]
-
-[tool.setuptools.package-data]
-"gpdr.paper" = ["sources.json"]
-
-[tool.pytest.ini_options]
-markers = ["legacy_artifacts: optional checks against external historical pickle files"]

@@ -202,45 +202,10 @@ evaluation recipes when reproducing their specific grids, unit conversions and
 Monte Carlo conventions. A base/reference density must stay on the same response
 scale as the observations to compare log scores.
 
-## Verification
-
-The current public-core reproduction is documented in
-[reproduction/shared_core/REPORT.md](reproduction/shared_core/REPORT.md).
-All three full runs passed: 4,598 scientific numeric records, all metric exports,
-and 22 rendered figures exactly match the independent notebook executions in
-the recorded environment. The unit suite has 35 passing tests, with three
-historical-pickle checks intentionally opt-in. The built wheel was also tested
-on new data outside the source directory.
-The earlier `reproduction/REPORT.md` concerns the superseded per-example port,
-not proof of the public interface. Its independent notebook reference runs are
-retained for comparison with the new full public-core runs.
-
-```bash
-python -m pytest tests -q
-python scripts/check_shared_core.py --example toy --project-root ..
-python scripts/check_shared_core.py --example weather --device mps --project-root ..
-python scripts/check_shared_core.py --example gini --project-root ..
-python scripts/compare_shared_core.py
-```
-
-The short tests read classes from untouched notebooks and compare initialization,
-updates and predictions. Full-run audits use the public `GPDR` and `fit_adam`.
-Comparison requires all reference scientific records and rendered figures to
-match; optimizer-local loop variables and unused GPyTorch parameters are listed
-separately, not counted as results. Source notebook hashes are checked first.
-Unit tests also verify a new nonlinear three-covariate base through the same
-public interface and reject reintroduction of per-example GPDR implementations.
-
-To rerun a complete audit:
-
-```bash
-python scripts/verify_paper.py --example gini --mode package --project-root .. --output reproduction/shared_core/gini/package
-```
+## Save and Load
 
 Rebuild the model with identical data/base/configuration and pass the saved
 `state_dict['Vu']` as `inducing_points` before calling `load_state_dict`.
 Loading rejects mismatched inducing locations or kernel settings rather than
 silently using different cached matrices. Full-model pickling supports functional bases via cloudpickle,
 but is environment-dependent. Only load pickle/checkpoint files you trust.
-The earlier multix tutorial remains a legacy experiment using deterministic
-imputation, not the reference for these three updated paper examples.
