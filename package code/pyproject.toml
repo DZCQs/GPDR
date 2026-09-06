@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gpdr"
+version = "0.3.0"
+description = "Package implementation for Gaussian-process density regression examples."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy<2.4",
+  "scipy",
+  "pandas",
+  "torch",
+  "gpytorch",
+  "matplotlib",
+  "ipython",
+  "cloudpickle",
+]
+
+[project.optional-dependencies]
+examples = ["pygam", "geopandas", "kmeans-pytorch", "seaborn"]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gpdr*"]
+
+[tool.setuptools.package-data]
+"gpdr.paper" = ["sources.json"]
+
+[tool.pytest.ini_options]
+markers = ["legacy_artifacts: optional checks against external historical pickle files"]

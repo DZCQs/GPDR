@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.DS_Store
+.Rhistory
+reproduction/**/figure_*.png
+reproduction/**/run/
+reproduction/**/model_state.pt
