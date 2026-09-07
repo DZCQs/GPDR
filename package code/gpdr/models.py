@@ -94,13 +94,22 @@ class GPDR(nn.Module):
             self.register_buffer("A", self.kern.delta_11(self.V, self.Vu) @ Kinv, persistent=False)
             self.register_buffer("B", self.kern.delta_21(self.V, self.Vu) @ Kinv, persistent=False)
             self.register_buffer("A2", self.A ** 2, persistent=False)
-        self.logits = nn.Parameter(torch.randn(C, dtype=x.dtype, device=x.device))
+        # Preserve the initial mixture and random stream, fixing the last logit at zero.
+        initial_logits = torch.randn(C, dtype=x.dtype, device=x.device)
+        self.logits = nn.Parameter(initial_logits[:-1] - initial_logits[-1])
         self.mus = nn.Parameter(torch.randn(C, self.m, dtype=x.dtype, device=x.device))
         self.s_params = nn.Parameter(torch.full((C, self.m), math.log(0.35), dtype=x.dtype, device=x.device))
         self.warm_start_mu()
 
     def _weights(self):
-        return torch.softmax(self.logits, dim=0)
+        logits = torch.cat((self.logits, self.logits.new_zeros(1)))
+        return torch.softmax(logits, dim=0)
+
+    def __setstate__(self, state):
+        super().__setstate__(state)
+        if self.logits.shape == (self.C,):
+            self.logits = nn.Parameter(self.logits[:-1] - self.logits[-1],
+                                       requires_grad=self.logits.requires_grad)
 
     def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict,
                               missing_keys, unexpected_keys, error_msgs):
@@ -117,6 +126,9 @@ class GPDR(nn.Module):
             saved = state_dict[prefix + name]
             if current.shape != saved.shape or not torch.equal(current.detach().cpu(), saved.detach().cpu()):
                 raise ValueError(f"Checkpoint {name} differs; construct GPDR with checkpoint['Vu'] and the saved kernel configuration")
+        saved_logits = state_dict.get(prefix + "logits")
+        if saved_logits is not None and saved_logits.shape == (self.C,):
+            state_dict[prefix + "logits"] = saved_logits[:-1] - saved_logits[-1]
         return super()._load_from_state_dict(state_dict, prefix, local_metadata, strict,
                                              missing_keys, unexpected_keys, error_msgs)
 
