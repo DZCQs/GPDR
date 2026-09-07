@@ -98,7 +98,7 @@ callable receiving the training (S(x), PIT) rows. `tensor_grid`,
 `sample_inducing`, and `kmeans_inducing` are reusable constructors. Neither
 coordinates nor response support are limited to a particular example.
 
-## Reproduce the Toy with Public Functions
+## Reproduce the Simulation example
 
 The three examples below use the same public model, optimizer, and predictor.
 Only data/base preparation and the recorded training settings differ. Run each
@@ -136,7 +136,7 @@ prediction = model.predict_density(0.3, y_min=-0.3, y_max=3.0, M=2000)
 y_grid, h_hat = prediction.y, prediction.density
 ```
 
-## Reproduce Weather with Public Functions
+## Reproduce Weather example
 
 Run this block from the package directory in the recorded environment. The
 parent directory must contain `Weatherdata` (the GitHub layout) or
@@ -220,7 +220,7 @@ covariate center, giving 1,290 inducing points. The Student-t training base and
 the original Gaussian reference are separate. For exact reproduction, keep the
 MPS/float32 computation, score scaling and parameter averaging shown above.
 
-## Reproduce Gini with Public Functions
+## Reproduce Gini example
 
 Run this block from the package directory. The parent directory must contain
 `Gini/reg_df.csv` (the GitHub layout) or `giniindex_thickertail/reg_df.csv` (the
