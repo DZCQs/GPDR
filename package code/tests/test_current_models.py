@@ -33,6 +33,8 @@ def test_trainable_weights_and_stochastic_gradient(C, kind):
         model = BetaGPMixtureDiag(x, y, mu_base_train=np.full(24,0.5), phi_base=5.0, C=C, m_induce=9, kp=kp)
     loss, info = model.forward_objective()
     loss.backward()
+    assert model.logits.shape == (C - 1,)
+    assert info['w'].shape == (C,)
     assert torch.isfinite(loss)
     assert all(p.grad is not None and torch.isfinite(p.grad).all() for p in model.parameters())
     assert info['w'].sum().item() == pytest.approx(1)
@@ -105,7 +107,7 @@ def test_goldberger_entropy_sign():
     m.entropy_correction = False
     torch.set_rng_state(rng)
     _, uncorrected = m.forward_objective()
-    w = torch.softmax(m.logits,0)
+    w = m._weights()
     torch.testing.assert_close(corrected['KL']-uncorrected['KL'], (w*torch.log(w+1e-12)).sum())
 
 
