@@ -369,7 +369,11 @@ if reproducing a notebook's stochastic evaluation.
 | Parameter averaging | last 5,000, running mean | last 500, sum/divide | none |
 
 The three models share trainable mixture weights, Goldberger entropy correction,
-and soft Gumbel-softmax imputation with temperature 0.5. The configuration keeps
+and soft Gumbel-softmax imputation with temperature 0.5. There are `C-1` trainable
+logits; a fixed zero reference logit is appended before softmax to obtain all `C`
+weights, which sum to one. Initialization draws `C` values and subtracts the last
+one, preserving the notebooks' initial weights and random-number sequence.
+The configuration keeps
 the existing notebook's numerical choices explicit: weather uses `x.numel()`
 for score scaling, a direct warm-start solve, an omitted first k-means center,
 and unclipped exponentiation. Toy's true SD is `0.2*x + 0.05`. Gini's training
@@ -388,5 +392,8 @@ scale as the observations to compare log scores.
 Rebuild the model with identical data/base/configuration and pass the saved
 `state_dict['Vu']` as `inducing_points` before calling `load_state_dict`.
 Loading rejects mismatched inducing locations or kernel settings rather than
-silently using different cached matrices. Full-model pickling supports functional bases via cloudpickle,
+silently using different cached matrices. Older model checkpoints with `C` logits
+are converted to `C-1` reference logits on load, preserving their mixture weights
+up to floating-point rounding. Old Adam optimizer states are not converted.
+Full-model pickling supports functional bases via cloudpickle,
 but is environment-dependent. Only load pickle/checkpoint files you trust.
