@@ -319,15 +319,6 @@ def density_plots(state):
     trace = state['trace']
     import seaborn as sns
     sns.set(style='whitegrid')
-    (fig1, ax1) = plt.subplots(1, 1, figsize=(6, 4))
-    ax1.plot(range(len(trace['F'])), trace['F'], color='#2E86AB', linewidth=2)
-    ax1.set_title('Objective Trace (TRAIN)', fontweight='bold')
-    ax1.set_xlabel('Closure calls')
-    ax1.set_ylabel('Objective F')
-    ax1.grid(True, alpha=0.3)
-    plt.tight_layout()
-    fig1.savefig('gp_objective_trace.pdf', dpi=200, bbox_inches='tight')
-    plt.show()
     idx_sorted = np.argsort(mu_hat_test)
     sel_indices = [idx_sorted[int(0.01 * len(idx_sorted))], idx_sorted[int((0.01 + 0.91) / 2 * len(idx_sorted))], idx_sorted[int(0.91 * len(idx_sorted))]]
     sigma_gam = None

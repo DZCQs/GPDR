@@ -377,41 +377,6 @@ def density_plots(state):
     y_mean = state['y_mean']
     y_std = state['y_std']
     y_test = state['y_test']
-    (fig1, axes1) = plt.subplots(2, 2, figsize=(12, 8))
-    axes1[0, 0].plot(range(1, len(trace['F']) + 1), trace['F'], color='#2E86AB', linewidth=2)
-    axes1[0, 0].set_xlabel('Closure calls')
-    axes1[0, 0].set_ylabel('Objective F')
-    axes1[0, 0].set_title('Objective Trace', fontweight='bold')
-    axes1[0, 0].grid(True, alpha=0.3)
-    W = np.stack(trace['w'])
-    colors_weights = ['#A23B72', '#F18F01', '#6A0572', '#AB83A1', '#F08A5D', '#B83B5E', '#6A0572', '#C0E218', '#3F88C5', '#F2545B']
-    for k in range(W.shape[1]):
-        axes1[0, 1].plot(range(1, len(trace['F']) + 1), W[:, k], label=f'ω_{k}', color=colors_weights[k], linewidth=2)
-    axes1[0, 1].set_xlabel('Closure calls')
-    axes1[0, 1].set_ylabel('Weight')
-    axes1[0, 1].set_title('Mixture Weights Trace', fontweight='bold')
-    axes1[0, 1].legend()
-    axes1[0, 1].grid(True, alpha=0.3)
-    MU = np.stack(trace['mu_norm'])
-    for k in range(MU.shape[1]):
-        axes1[1, 0].plot(range(1, len(trace['F']) + 1), MU[:, k], label=f'||μ_{k}||', color=colors_weights[k], linewidth=2)
-    axes1[1, 0].set_xlabel('Closure calls')
-    axes1[1, 0].set_ylabel('Norm')
-    axes1[1, 0].set_title('μ Norms Trace', fontweight='bold')
-    axes1[1, 0].legend()
-    axes1[1, 0].grid(True, alpha=0.3)
-    S = np.stack(trace['s_mean'])
-    for k in range(S.shape[1]):
-        axes1[1, 1].plot(range(1, len(trace['F']) + 1), S[:, k], label=f'mean(s_{k})', color=colors_weights[k], linewidth=2)
-    axes1[1, 1].set_xlabel('Closure calls')
-    axes1[1, 1].set_ylabel('Mean log-std')
-    axes1[1, 1].set_title('s Means Trace', fontweight='bold')
-    axes1[1, 1].legend()
-    axes1[1, 1].grid(True, alpha=0.3)
-    plt.suptitle('Optimization Traces', fontsize=16, fontweight='bold', y=0.98)
-    plt.tight_layout()
-    plt.savefig('optimization_traces_weather.pdf', dpi=300, bbox_inches='tight')
-    plt.show()
     (fig2, axes2) = plt.subplots(1, 3, figsize=(15, 5))
     random_indexes = torch.randperm(x_test.size(0), generator=torch.Generator())[[12, 123, 1234]]
     x_values = [x_test[random_indexes[0], :].cpu().numpy(), x_test[random_indexes[1], :].cpu().numpy(), x_test[random_indexes[2], :].cpu().numpy()]
